@@ -1,0 +1,4 @@
+C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Snake/build/debug/build/CMakeFiles/LAB02_Snake.dir
+C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Snake/build/debug/build/CMakeFiles/copy-compile-commands.dir
+C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Snake/build/debug/build/CMakeFiles/edit_cache.dir
+C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Snake/build/debug/build/CMakeFiles/rebuild_cache.dir
