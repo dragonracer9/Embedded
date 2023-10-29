@@ -52,7 +52,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = "C:\Program Files\CMake\bin\cmake.exe" --regenerate-during-build -SC:\Users\vikra\Desktop\embedded\LAB02_InputsInterrupts\LAB02_Delay -BC:\Users\vikra\Desktop\embedded\LAB02_InputsInterrupts\LAB02_Delay\build\debug\build
+  command = "C:\Program Files\CMake\bin\cmake.exe" --regenerate-during-build -SC:\Users\vikra\Desktop\embedded\exercises\LAB02_InputsInterrupts\LAB02_Delay -BC:\Users\vikra\Desktop\embedded\exercises\LAB02_InputsInterrupts\LAB02_Delay\build\debug\build
   description = Re-running CMake...
   generator = 1
 

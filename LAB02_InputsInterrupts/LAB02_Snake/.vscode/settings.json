@@ -1,7 +1,6 @@
 {
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "cmake.configureOnOpen": true,
-  "files.associations": {
-    "main.h": "c"
-  }
+  "stm32-for-vscode.openOCDPath": false,
+  "stm32-for-vscode.makePath": false
 }

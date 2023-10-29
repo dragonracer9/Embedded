@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Snake
+# Install script for directory: C:/Users/vikra/Desktop/embedded/exercises/LAB02_InputsInterrupts/LAB02_Snake
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Snake/build/debug/install")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/vikra/Desktop/embedded/exercises/LAB02_InputsInterrupts/LAB02_Snake/build/debug/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Snake/build/debug/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/vikra/Desktop/embedded/exercises/LAB02_InputsInterrupts/LAB02_Snake/build/debug/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

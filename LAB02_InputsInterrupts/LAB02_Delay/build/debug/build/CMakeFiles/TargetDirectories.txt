@@ -1,4 +1,4 @@
-C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Delay/build/debug/build/CMakeFiles/LAB02_Delay.dir
-C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Delay/build/debug/build/CMakeFiles/copy-compile-commands.dir
-C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Delay/build/debug/build/CMakeFiles/edit_cache.dir
-C:/Users/vikra/Desktop/embedded/LAB02_InputsInterrupts/LAB02_Delay/build/debug/build/CMakeFiles/rebuild_cache.dir
+C:/Users/vikra/Desktop/embedded/exercises/LAB02_InputsInterrupts/LAB02_Delay/build/debug/build/CMakeFiles/LAB02_Delay.dir
+C:/Users/vikra/Desktop/embedded/exercises/LAB02_InputsInterrupts/LAB02_Delay/build/debug/build/CMakeFiles/copy-compile-commands.dir
+C:/Users/vikra/Desktop/embedded/exercises/LAB02_InputsInterrupts/LAB02_Delay/build/debug/build/CMakeFiles/edit_cache.dir
+C:/Users/vikra/Desktop/embedded/exercises/LAB02_InputsInterrupts/LAB02_Delay/build/debug/build/CMakeFiles/rebuild_cache.dir

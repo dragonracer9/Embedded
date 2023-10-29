@@ -1,0 +1,8 @@
+build
+cmake
+CMakePresets.json
+vcpkg-configuration.json
+.vs
+.vscode
+compile_commands.json
+.cache
