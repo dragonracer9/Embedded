@@ -37,15 +37,17 @@ UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 // TODO: Create two *volatile* uint32_t variables that will serve as flags
-//       to indicate that the timer captured and input or finished:
+//       to indicate that the timer captured an input or finished:
+volatile uint32_t capture;
+volatile uint32_t finish;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_USART2_UART_Init(void);
 static void MX_RNG_Init(void);
 static void MX_TIM3_Init(void);
-static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 void wait_for_enter_button_press(void);
@@ -84,9 +86,9 @@ int main(void) {
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_USART2_UART_Init();
   MX_RNG_Init();
   MX_TIM3_Init();
-  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -103,50 +105,102 @@ int main(void) {
 
     // TODO: Use the hardware random number generator to pick between TIM_CHANNEL_CH3
     //       or TIM_CHANNEL_CH4, and a delay between 1000ms and 2000ms:
-    uint32_t selected_channel; // TIM_CHANNEL_3 or TIM_CHANNEL_4
-    uint32_t delay_ms;         // Between 1000ms and 2000ms
+    uint32_t selected_channel = 0; // TIM_CHANNEL_3 or TIM_CHANNEL_4
+    uint32_t delay_ms = 0;         // Between 1000ms and 2000ms
+    if (HAL_RNG_GenerateRandomNumber(&hrng, &delay_ms) != HAL_OK) {
+      printf("ERROR generating random number\r\n");
+      Error_Handler();
+    }
+    // there are two ways of selecting a channel:
+    // either I just reuse the random number I already have, and just mod it by 2
+    // or I generate a whole new random number
 
+    // option 2 is more processing intensive (barely)
+    // imma go with option 1
+    switch (delay_ms % 2) {
+      case 0:
+        selected_channel = TIM_CHANNEL_4;
+        printf("SELECTED CHANNEL 4: %" PRIu32 "\r\n", selected_channel);
+        break;
+      case 1:
+        selected_channel = TIM_CHANNEL_3;
+        printf("SELECTED CHANNEL 3: %" PRIu32 "\r\n", selected_channel);
+        break;
+    }
+
+    delay_ms = 1000 + (delay_ms % 1000);
+    printf("DELAY: %" PRIu32 "\r\n", delay_ms);
 
     // ==== STEP 2: Wait for random delay ====
 
     // TODO: Wait for the delay period you generated:
+    HAL_Delay(delay_ms);
 
     // ==== STEP 3: Start timers ====
 
     // TODO: Reset your "input captured" and "timer finished" flags:
+    capture = 0;
+    finish = 0;
 
     // TODO: Reset the timer to 0:
+    __HAL_TIM_SET_COUNTER(&htim3, 0);
 
     // TODO: Start timer in input capture mode on the correct channel
     //       with the interrupt enabled. Check the return value. If there
     //       was an error, print an error message and call Error_Handler()!
+    if (HAL_TIM_IC_Start_IT(&htim3, selected_channel) != HAL_OK) {
+      printf("ERROR timer could not be started in interrupt mode\r\n");
+      Error_Handler();
+    }
 
     // TODO: Also enable the timer update (counter finished) interrupt:
+    __HAL_TIM_CLEAR_IT(&htim3, TIM_IT_UPDATE);
+    __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_UPDATE);
 
     // TODO: Turn on the LED that corresponds to the randomly selected channel:
     //       CH3: LED1
     //       CH4: LED2
+    switch (selected_channel) {
+      case TIM_CHANNEL_3:
+        HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+        break;
+      case TIM_CHANNEL_4:
+        HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
+    }
 
     // ==== STEP 4: Wait for the button to be pressed or timer to finish ====
 
     // TODO: Use a while-loop to wait for one of your two flag variables to be set:
+    while (capture == 0 && finish == 0) {
+    }
 
     // TODO: Turn off the LED:
+    switch (selected_channel) {
+      case TIM_CHANNEL_3:
+        HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+        break;
+      case TIM_CHANNEL_4:
+        HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+    }
 
     // TODO: Stop the timer. Check the return value. If there was an error,
     //       print an error message and call Error_Handler()!
+    if (HAL_TIM_IC_Stop_IT(&htim3, selected_channel) != HAL_OK) {
+      printf("ERROR reading timer\r\n");
+      Error_Handler();
+    }
 
     // ==== STEP 5: Determine Result ====
 
     // TODO: Check if your "input captured" flag is set:
-    if (TODO) {
+    if (capture != 0) {
       // Input capture interrupt.
 
       // TODO: Retrieve the compare register value of the selected channel:
-      uint32_t ccr = TODO;
+      uint32_t ccr = __HAL_TIM_GET_COMPARE(&htim3, selected_channel);
 
       // TODO: Convert the register value to milliseconds:
-      float period_ms = TODO;
+      float period_ms = (float)ccr / 65535.0;
 
       // Print the result:
       printf("Reaction time:  %fms\r\n", period_ms);
@@ -216,6 +270,18 @@ void SystemClock_Config(void) {
 static void MX_RNG_Init(void) {
 
   /* USER CODE BEGIN RNG_Init 0 */
+
+  /* USER CODE END RNG_Init 0 */
+
+  /* USER CODE BEGIN RNG_Init 1 */
+
+  /* USER CODE END RNG_Init 1 */
+  hrng.Instance = RNG;
+  if (HAL_RNG_Init(&hrng) != HAL_OK) {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RNG_Init 2 */
+
   /* USER CODE END RNG_Init 2 */
 }
 
@@ -227,6 +293,41 @@ static void MX_RNG_Init(void) {
 static void MX_TIM3_Init(void) {
 
   /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_IC_InitTypeDef sConfigIC = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 1220;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 65535;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_IC_Init(&htim3) != HAL_OK) {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK) {
+    Error_Handler();
+  }
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_FALLING;
+  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
+  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
+  sConfigIC.ICFilter = 0;
+  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_3) != HAL_OK) {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_4) != HAL_OK) {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
   /* USER CODE END TIM3_Init 2 */
 }
 
@@ -312,11 +413,13 @@ static void MX_GPIO_Init(void) {
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
   UNUSED(htim);
   // TODO: Set your "input captured" flag variable.
+  capture = 1;
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   UNUSED(htim);
   // TODO: Set your "timer finished" flag variable.
+  finish = 1;
 }
 
 void wait_for_enter_button_press(void) {
