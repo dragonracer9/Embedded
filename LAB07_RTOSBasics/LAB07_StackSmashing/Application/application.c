@@ -20,6 +20,7 @@ ULONG thread1_stack[(THREAD1_STACK_SIZE_BYTES + sizeof(ULONG) - 1) / sizeof(ULON
 
 // ==== THREAD 1 ===============================================================
 
+static uint32_t n = 0;
 uint32_t fib(uint32_t n) {
   // Sleep for 1 tick.
   // This is required for the stack-overflow detection to trigger, since the RTOS
@@ -38,10 +39,16 @@ uint32_t fib(uint32_t n) {
     return fib(n - 1) + fib(n - 2);
   }
 }
-static uint32_t n = 0;
+
+uint32_t fibonacci(uint32_t nth) {
+  double phi = (1 + sqrt(5)) / 2.0;
+  return round(pow(phi, nth) / sqrt(5));
+}
+
 static void thread1_entry(ULONG parameter) {
   UNUSED(parameter);
-  for (; n <= 20; n++) {
+  for (; n <= UINT32_MAX; n++) {
+    printf("working on fibonnaci #%02" PRIu32 "\r\n", n);
     printf("fib(%02" PRIu32 ") = %" PRIu32 "\r\n", n, fib(n));
   }
 }
@@ -54,9 +61,10 @@ static void thread1_entry(ULONG parameter) {
 __NO_RETURN
 void stack_error_handler(TX_THREAD *ptr) {
   UNUSED(ptr);
-  float phi = (1 + sqrt(5)) / 2;
-  float fibonacci = round(pow(phi, n) / sqrt(5));
-  printf("LMAO, the stack did overflow xP\r\n(btw, at n = %" PRIu32 ", where fib would've been: %g)\r\nbreh\r\n", n, fibonacci);
+  printf("LMAO, the stack did overflow xP\r\n(btw, at n = %" PRIu32 ", where fib would've been: %" PRIu32
+         ")\r\nbreh\r\n\n",
+         n, fibonacci(n));
+  printf("ERROR: stack overflow\r\n");
   while (1) {
   }
 }
